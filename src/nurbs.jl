@@ -16,6 +16,7 @@ N1(i,p) = Float64[ bspline.N(i,p,Ξ,x1)  for x1 in x ]
 M1(j,p) = Float64[ bspline.N(j,p,H,x1)  for x1 in x ]
 
 bspline.global_basis_number(Ξ,H,1,3,order)
+bspline.element_number(Ξ,H,n1,n2,2)
 
 INC_array = bspline.INC(Ξ, H, order)
 IEN_array = bspline.IEN(Ξ, H, order)

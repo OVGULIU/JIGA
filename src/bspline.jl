@@ -1,5 +1,5 @@
 module bspline
-export N, knot_parameters, global_basis_number, INC, IEN
+export N, knot_parameters, global_basis_number, INC, IEN, element_number
 
 # The following function evaluates a b-spline function of order 'p' and local index 'i' corresponding
 # to the knot vector Ξ. The function is evaluated at the point ξ. Clearly, the arguments 'i', 'p' and 'ξ'
@@ -130,12 +130,17 @@ function element_number( Ξ::Array, H::Array, i::Int64, j::Int64, order::Int64 )
   end
 end
 
+# The following function returns the IEN array corresponding to the knot vectors
+# Ξ and H for basis functions of prescribed order. Given an element number 'e' and local basis
+# function number 'b', the entry IEN[b,e] is the global number of this basis function.
 
 function IEN ( Ξ::Array, H::Array, order::Int64 )
   n1 = knot_parameters(Ξ, order)
   n2 = knot_parameters(H, order)
   A,elmt = 1,0
-  IEN_array = zeros(2,9)
+  num_of_local_basis_functions = (order+1)*(order+1)
+  num_of_elements = element_number(Ξ,H,n1,n2,order)
+  IEN_array = zeros(num_of_elements,num_of_local_basis_functions)
   for j = 1:n2
     for i = 1:n1
       if i >= order+1 && j >= order+1
@@ -144,7 +149,7 @@ function IEN ( Ξ::Array, H::Array, order::Int64 )
           for iloc = 0:order
             B = A - jloc*n1 - iloc
             b = jloc*(order+1) + iloc + 1
-            IEN_array[b,e] = B
+            IEN_array[elmt,b] = B
           end
         end
       end
